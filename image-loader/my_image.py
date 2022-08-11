@@ -61,21 +61,25 @@ class MyImage(object):
         '''
         self.name = name
         self.src = src
+
+        print('\n' + '---- Build image folder ----')
+        t = time.time()
+
         self.folders = self.mk_folder()
         self.image = self.mk_image_from_src()
         self.resize_image()
 
         if self.image:
-            print('---------------------------------------')
             print('Loaded image: {}'.format(name))
             print('Contains of {}'.format(self.folders['folder']))
             for e in self.folders['folder'].iterdir():
                 print('  {}'.format(e.name))
-            print('----')
         else:
-            print('---------------------------------------')
             print('Failed on image: {}'.format(name))
-            print('----')
+
+        print(
+            '---- Build image folder costs {:.2f} seconds ----\n'.format(time.time() - t))
+
         pass
 
     def mk_folder(self):

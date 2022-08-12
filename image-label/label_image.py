@@ -85,6 +85,7 @@ class TransformersImage(object):
 
         :output: The json of segment masks, 'segment.json'
         :output: [If the segment is available], the jpg image of segment masks, 'segment.jpg'
+        :output: Image in the segment/ folder, the masks are the mask .jpg images (255 refers the inside area of the mask), the covers are the patches within the masks
         '''
         image = self.image
 
@@ -108,17 +109,17 @@ class TransformersImage(object):
 
                 im = np.array(image, dtype=np.uint8)
                 m = np.array(mask, dtype=np.uint8)
-                m[m > 0] = 1
 
                 assert len(im.shape) == 3, 'Image size is incorrect'
 
-                for j in range(im.shape[-1]):
-                    im[:, :, j] *= m
-                img = Image.fromarray(im, mode=image.mode)
+                im = np.concatenate([im, m[:, :, np.newaxis]], axis=2)
+
+                img = Image.fromarray(im, mode='RGBA')
 
                 p = self.folder.joinpath(
-                    'segment', 'cover-{}-{}-{:.2f}.jpg'.format(idx, label, score))
+                    'segment', 'cover-{}-{}-{:.2f}.png'.format(idx, label, score))
                 img.save(p)
+                print('Saved cover: {}'.format(p))
 
                 p = self.folder.joinpath(
                     'segment', 'mask-{}-{}-{:.2f}.jpg'.format(idx, label, score))

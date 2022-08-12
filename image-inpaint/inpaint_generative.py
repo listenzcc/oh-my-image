@@ -21,13 +21,17 @@ FLAGS = ng.Config(Path(__file__).parent.joinpath('inpaint.yml'))
 # sess_config = tf.ConfigProto()
 # sess_config.gpu_options.allow_growth = True
 
-checkpoint_dir = Path(__file__).parent.joinpath('model_logs/release_places2_256')
+checkpoint_dir = Path(__file__).parent.joinpath(
+    'model_logs/release_places2_256')
 
 # %%
+
+
 class InpaintImage(object):
     ''' Inpaint image in the folder with generative inpaint '''
+
     def __init__(self, image_folder):
-        '''Initialize the Image inpaint 
+        '''Initialize the Image inpaint
         :param: image_folder: The folder of the image of interest.
         '''
 
@@ -37,11 +41,22 @@ class InpaintImage(object):
 
         self.folder = image_folder
 
-        self.image = self.load_image()
+        # Check if the inpaint has been done,
+        # to prevent repeated inpaints.
+        self.ok = self.folder.joinpath('inpaint.ok')
 
-        self.masks = self.load_masks()
+        if not self.ok.is_file():
+            self.image = self.load_image()
 
-        self.inpaint_masks()
+            self.masks = self.load_masks()
+
+            self.inpaint_masks()
+
+            with open(self.ok, 'w') as f:
+                f.writelines(
+                    ['Inpaint job is done.', '{}'.format(time.time())])
+        else:
+            print(open(self.ok).read())
 
         print(
             '---- Inpaint image with generative inpaint costs {:.2f} seconds ----\n'.format(time.time() - t))
@@ -108,7 +123,8 @@ class InpaintImage(object):
             # load pretrained model
             tf.reset_default_graph()
             result = sess.run(output, feed_dict={input_image_ph: input_image})
-            cv2.imwrite(output_path.as_posix(), cv2.resize(result[0][:, :, ::-1], raw_size))
+            cv2.imwrite(output_path.as_posix(), cv2.resize(
+                result[0][:, :, ::-1], raw_size))
             print('Processed: {}'.format(output_path.name))
 
             # # Inpaint the image with the mask
@@ -189,9 +205,10 @@ class InpaintImage(object):
 
         return masks
 
+
 # %%
 if __name__ == "__main__":
-    folder = Path('../image')
+    folder = Path(__file__).parent.parent.joinpath('image')
 
     for image_folder in [e for e in folder.iterdir() if e.is_dir()]:
         InpaintImage(

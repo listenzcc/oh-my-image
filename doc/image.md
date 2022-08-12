@@ -6,25 +6,39 @@ The sub-folders are images.
 The image folders are named as the image. The one of them contains
 
 ---
-- Image
-    - [name], the raw image, the extent name is as the same as the image;
-    - raw.jpg, the raw image with jpeg format;
-    - resize.jpg, the well formatted image;
-    - thumb.jpg, the small thumb version of the image.
+
+-   Image
+    -   [name], the raw image, the extent name is as the same as the image;
+    -   raw.jpg, the raw image with jpeg format;
+    -   resize.jpg, the well formatted image;
+    -   thumb.jpg, the small thumb version of the image.
 
 ---
-- Label
-    - image-label.jpg, the image with label boxes;
-    - label/, the folder of image patches within the label boxes;
-    - label/[%1]-[%2].jpg
-        - %1, the label index;
-        - %2, the label string.
-        - For example, 1-person.jpg
+
+-   label
+    -   objects.jpg, the boxes of objects;
+    -   objects.json, the json of objects;
 
 ---
-- Segment
-    - image-segment.jpg, the image segmentation;
-    - mask/, the 255 mask of the segments;
-    - mask/[%1].jpg
-        - %1, the segment index;
-        - For example, 1.jpg
+
+-   depth
+    -   depth.jpg, the depth map of the image;
+
+---
+
+-   segment
+    -   segment.jpg, the image segmentation;
+    -   segment.json, the json of segmentation;
+    -   segment/, the folder of segmentation detail;
+        -   mask-[%1]-[%2]-[%3].jpg, the 255 mask of the segments;
+            -   %1: the idx of the segment;
+            -   %2: the name of the segment;
+            -   %3: the score of the segment.
+        -   cover-[%1]-[%2]-[%3].png, the png cover of the segment,
+            only the inside segment is displayed,
+            the others are transparent.
+
+---
+
+-   inpaint
+    -   mask-[%1]-[%2]-[%3].jpg, the inpainted image using the mask in segment folder

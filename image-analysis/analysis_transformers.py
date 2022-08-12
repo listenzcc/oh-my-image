@@ -157,10 +157,11 @@ class TransformersImage(object):
         path = self.folder.joinpath('objects.json')
         if path.is_file():
             print('W: File exists, {}'.format(path))
+            objects = json.load(open(path))
         else:
             objects = object_detector(image)
             json.dump(objects, open(path, 'w'))
-            print('Detect objects: {}'.format([e['label'] for e in objects]))
+        print('Detect objects: {}'.format([e['label'] for e in objects]))
 
         # Draw detection
         path = self.folder.joinpath('objects.jpg')
@@ -170,7 +171,7 @@ class TransformersImage(object):
             img = image.copy()
 
             font = ImageFont.truetype(
-                font='/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', size=24)
+                font='/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', size=16)
 
             colormap = px.colors.qualitative.Dark24
 
@@ -183,7 +184,7 @@ class TransformersImage(object):
                          (box['xmax'], box['ymax'])]
 
                 draw = ImageDraw.Draw(img)
-                draw.rectangle(shape, outline=color, width=3)
+                draw.rectangle(shape, outline=color, width=2)
                 draw.text((shape[0][0], shape[0][1]-20),
                           '{} ({:.2f})'.format(label, score), font=font, fill=color)
                 print('New image: {}'.format(path))
@@ -232,7 +233,7 @@ class TransformersImage(object):
 
 # %%
 if __name__ == '__main__':
-    folder = Path('../image')
+    folder = Path(__file__).parent.parent.joinpath('image')
 
     for image_folder in [e for e in folder.iterdir() if e.is_dir()]:
         TransformersImage(

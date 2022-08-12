@@ -130,7 +130,7 @@ class MyImage(object):
         print('Image raw size is {}'.format(size))
 
         # Resize to width=400px
-        w = 400
+        w = 800
         k = size[0] / w
         new_size = (w, int(size[1]/k))
         img = image.resize(new_size)

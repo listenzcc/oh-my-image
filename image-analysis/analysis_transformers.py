@@ -69,7 +69,7 @@ class TransformersImage(object):
         folder = self.folder
 
         assert folder.is_dir(), 'Invalid image_folder: {}'.format(folder)
-        for name in ['raw.jpg', 'resize.jpg', 'thumb.jpg']:
+        for name in ['resize.jpg']:
             assert folder.joinpath(name).is_file(
             ), 'Invalid file: {}'.format(name)
 
